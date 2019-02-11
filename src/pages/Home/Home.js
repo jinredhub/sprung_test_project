@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-// import logo from './logo.svg';
 import './Home.css';
-import {database} from '../../firebase';
 import * as firebase from "firebase";
 import moment from 'moment';
 import axios from '../../axios';
@@ -10,6 +8,7 @@ import Tweet from '../../components/Tweet/Tweet';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import PeopleToFollow from '../../components/PeopleToFollow/PeopleToFollow';
+import {database} from "../../firebase";
 
 
 class Home extends Component {
@@ -47,7 +46,7 @@ class Home extends Component {
                 firstName: 'testFirst',
                 lastName: 'testLast',
                 tweets: [
-                    {created_at: '2019-02-09T15:56:09-08:00', message: 'kkkkkk'},
+                    {created_at: '2019-01-09T15:56:09-08:00', message: 'kkkkkk'},
                 ],
                 following: [],
             },
@@ -60,10 +59,11 @@ class Home extends Component {
         firebase.auth().onAuthStateChanged(firebaseUser =>{
             if(firebaseUser){
                 this.setState({ loginEmail: firebaseUser.email });
-                this.storeTweetsYouFollow(firebaseUser.email);
 
-                const user = firebase.auth().currentUser;
-                console.log('current user: ', user);
+                // const user = firebase.auth().currentUser;
+                // console.log('current user: ', user);
+                this.loadDatabase(firebaseUser.email);
+                // this.storeTweetsYouFollow(firebaseUser.email);
             }
             else{
                 const url = '/';
@@ -71,23 +71,36 @@ class Home extends Component {
                 console.log('not logged in');
             }
         });
-
     }
 
-    loadDatabase = () =>{
+    loadDatabase = (email) =>{
+        // console.log('loading database');
 
+        axios.get('/.json')
+            .then(res=>{
+                // console.log('load: ',res.data);
+
+                // firebase won't store empty array, so create empty array here
+                for(let user of res.data.allUsers){
+                    if(!user.tweets){
+                        user.tweets = [];
+                    }
+                    if(!user.following){
+                        user.following = [];
+                    }
+                }
+                // console.log('new res.data: ', res.data);
+                this.setState({allUsers: res.data.allUsers});
+                this.storeTweetsYouFollow(email);
+            })
+            .catch(err=>console.log(err));
     }
 
     updateDatabase = () =>{
         // console.log('allusers: ', allUsers);
 
         const data = this.state.allUsers;
-
-        alert(data);
-        console.log('data: ',data);
-        // axios.post('/.json', allUsers)
-        //     .then(res=>console.log(res))
-        //     .catch(err=>console.log(err));
+        database.ref("-LYQMvCCcIhXxVdiPSvW").set({allUsers: data});
     }
 
     logOutHandler = () =>{
@@ -126,11 +139,36 @@ class Home extends Component {
             }
         }
 
-        console.log('tweets', tweets);
+        // console.log('tweets', tweets);
 
-        // TODO: sort the tweets by date
+        const tempArray = [];
+        for(let tweet of tweets){
+            const newObj = {};
+            newObj.firstName = tweet.firstName;
+            newObj.lastName = tweet.lastName;
+            newObj.message = tweet.message;
+            newObj.created_at = moment(tweet.created_at);
+            tempArray.push(newObj);
+        }
 
-        this.setState({followingTweets: tweets});
+        // sort tweet by date/time
+        tempArray.sort((left, right) =>{
+            return right.created_at.diff(left.created_at);
+        });
+
+        // format date/time
+        // console.log('sorted tweets: ', tempArray);
+        const formattedTime = tempArray.map(tweet=>{
+            return {
+                firstName: tweet.firstName,
+                lastName: tweet.lastName,
+                message: tweet.message,
+                created_at: tweet.created_at.format('MM/DD/YYYY'),
+            }
+        });
+        // console.log('format: ', formattedTime);
+
+        this.setState({followingTweets: formattedTime});
     }
 
     changeCurrentTweetHandler = (ev) =>{
@@ -144,8 +182,6 @@ class Home extends Component {
             const allUsers = this.state.allUsers;
             const today = moment().format();
             // console.log(today);
-
-            // TODO: format time
 
             // add new tweet and time
             for(let user of allUsers){
@@ -167,10 +203,9 @@ class Home extends Component {
                 allUsers: allUsers,
                 newTweet: '',
             });
-            console.log('allUsers: ',allUsers)
+            console.log('allUsers: ',allUsers);
 
-            // this.updateDatabase(allUsers);
-
+            this.updateDatabase(allUsers);
         }
     }
 
@@ -191,8 +226,8 @@ class Home extends Component {
         // console.log('allusers: ',allUsers[0]);
 
         this.storeTweetsYouFollow(loginEmail);
+        this.updateDatabase();
     }
-
 
     render() {
         // render tweets of users that you follow
@@ -236,6 +271,7 @@ class Home extends Component {
                     followingUsers = user.following;
                 }
             }
+            // console.log('======', followingUsers);
 
             // find users you don't follow
             let unFollwingUsers = allUsers.filter(user=>{
@@ -279,11 +315,11 @@ class Home extends Component {
             userInfoContainer = <div className='userInfoContainer'>
                                     <h2>{firstName} {lastName}</h2>
                                     <div className='userDetailContainer'>
-                                        <div className="flex-50">
-                                            <div>Tweets</div>
+                                        <div className="width-50">
+                                            <div><a href='/allTweets'>Tweets</a></div>
                                             {numberOfTweets}
                                         </div>
-                                        <div className="flex-50">
+                                        <div className="width-50">
                                             <div>Following</div>
                                             {numberOfFollowing}
                                         </div>
@@ -294,15 +330,21 @@ class Home extends Component {
 
         return (
             <div className="Home">
-                <Button type='button' onClick={this.logOutHandler}>Log Out</Button>
+                <div className='nav'>
+                    <Button type='button' onClick={this.logOutHandler}>Log Out</Button>
+                </div>
                 <div className='pageContainer'>
                     <div className="flex-33">
                         {userInfoContainer}
-                        {listOfPeopleToFollow}
+                        <div className='peopleToFollowContainer'>
+                            {listOfPeopleToFollow}
+                        </div>
                     </div>
                     <div className="flex-66">
                         {createTweetContainer}
-                        {followingTweets}
+                        <div className='tweetsContainer'>
+                            {followingTweets}
+                        </div>
                     </div>
                 </div>
             </div>

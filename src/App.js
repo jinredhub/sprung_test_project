@@ -5,6 +5,7 @@ import './App.css';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import SignUp from './pages/SignUp/SignUp';
+import AllTweets from './pages/AllTweets/AllTweets';
 
 class App extends Component {
 
@@ -14,7 +15,8 @@ class App extends Component {
                 <div className="App">
                     <Route path='/home' exact component={Home}/>
                     <Route path='/' exact component={Login}/>
-                    <Route path='/singup' exact component={SignUp}/>
+                    <Route path='/signup' exact component={SignUp}/>
+                    <Route path='/allTweets' exact component={AllTweets}/>
                 </div>
             </BrowserRouter>
         );

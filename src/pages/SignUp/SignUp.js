@@ -33,11 +33,20 @@ class SignUp extends Component {
     loadDatabase = () =>{
         console.log('loading database');
 
-        database.ref().on('value', function(snapshot){
-            if(snapshot.child('text').exists()){
-                console.log('snapshot: ',snapshot.val().text);
-            }
-        });
+        axios.get('/.json')
+            .then(res=>{
+                console.log('load: ',res.data);
+                if(res.data.allUsers.length){
+                    console.log('yes length');
+                    this.setState({allUsers: res.data.allUsers});
+                }
+                else{
+                    console.log('no length');
+                    this.setState({allUsers: []});
+                }
+            })
+            .catch(err=>console.log(err));
+
     }
 
     // // update db
@@ -49,8 +58,6 @@ class SignUp extends Component {
 
     updateDatabase = (email, firstName, lastName) =>{
 
-
-
         const allUsers = this.state.allUsers;
         console.log('allusers: ', allUsers);
         // if(!allUsers[email]){
@@ -61,19 +68,23 @@ class SignUp extends Component {
         //         following: [],
         //     }
         // }
-        const data = {
+
+        allUsers.push({
             firstName: firstName,
             lastName: lastName,
             email: email,
             tweet: [],
             following: [],
-        }
+        });
 
-        console.log('save data: ', data);
+        console.log('save data: ', allUsers);
 
-        axios.post('/.json', data)
-            .then(res=>console.log(res))
-            .catch(err=>console.log(err));
+        // axios.post('/.json', allUsers)
+        //     .then(res=>console.log(res))
+        //     .catch(err=>console.log(err));
+
+        database.ref("-LYQMvCCcIhXxVdiPSvW").set({allUsers: allUsers});
+
     }
 
     formSignupHandler = () =>{
@@ -122,7 +133,7 @@ class SignUp extends Component {
         if(this.state.errorMessage){
             errorMessage = <p className='errorText'>{this.state.errorMessage}</p>;
         }
-        const form = <form role='form'>
+        const form = <form>
             <Input
                 inputtype='input'
                 type='text'
@@ -144,7 +155,7 @@ class SignUp extends Component {
                 label='Password'
                 onChange={(ev)=>this.inputTextHandler(ev, 'password')}/>
             {errorMessage}
-            <Button onClick={()=>this.formSignupHandler()} type='button'>Sign Up</Button>
+            <Button id='signupButton' onClick={()=>this.formSignupHandler()} type='button'>Sign Up</Button>
         </form>;
 
         return (

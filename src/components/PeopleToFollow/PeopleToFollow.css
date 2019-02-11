@@ -4,15 +4,19 @@
     border: 1px solid #e2e2e2;
     background-color: white;
     padding: 10px 12px;
+    border-radius: 5px;
 }
 .PeopleToFollow .initials{
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    background-color: red;
+    background-color: #ffa500;
     width: 40px;
     height: 40px;
     margin-right: 10px;
-
+}
+.PeopleToFollow .Button{
+    padding: 0;
+    width: 100px;
 }

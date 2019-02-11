@@ -19,3 +19,8 @@
     color: red;
     background-color: rgba(255,229,229,0.7);
 }
+.Login .linkContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

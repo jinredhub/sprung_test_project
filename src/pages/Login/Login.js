@@ -48,6 +48,7 @@ class Login extends Component {
     //     promise.catch(e=>console.log(e.message));
     //
     // }
+
     inputTextHandler = (ev, type) =>{
         if(type === 'username'){
             this.setState({ emailText: ev.target.value});
@@ -62,7 +63,7 @@ class Login extends Component {
         if(this.state.errorMessage){
             errorMessage = <p className='errorText'>{this.state.errorMessage}</p>;
         }
-        const form = <form role='form'>
+        const form = <form>
                         <Input
                             inputtype='input'
                             type='text'
@@ -75,7 +76,10 @@ class Login extends Component {
                             onChange={(ev)=>this.inputTextHandler(ev, 'password')}/>
                         {errorMessage}
                         <Button onClick={()=>this.formLoginHandler()} type='button'>Log In</Button>
-                        <Button onClick={()=>this.formSignupHandler()} type='button'>Sign Up</Button>
+                        <div className='linkContainer'>
+                            <div>or</div>
+                            <a id='signupLink' href="/signup">Sign Up</a>
+                        </div>
                     </form>;
 
         return (

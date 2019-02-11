@@ -1,3 +1,14 @@
+
+.Home > .nav{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 60px;
+    background-color: white;
+}
+.Home > .nav  button{
+    width: 200px;
+}
 .Home .pageContainer{
     display: flex;
     margin: 10px 150px;
@@ -13,6 +24,7 @@
     border: 1px solid #e2e2e2;
     background-color: white;
     padding: 10px 12px;
+    border-radius: 5px;
 }
 .Home .userInfoContainer > h2{
     text-align: center;
@@ -20,6 +32,12 @@
 .Home .userDetailContainer{
     display: flex;
 }
-.Home .flex-50{
+.Home .width-50{
     width: 50%;
+}
+.Home .tweetsContainer{
+    overflow-y: auto;
+}
+.Home .peopleToFollowContainer{
+    overflow-y: auto;
 }

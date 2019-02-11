@@ -1,13 +1,14 @@
 
 body{
-  background-color: #e2e2e2;
+  background-color: #51dc9f;
+  background-image: linear-gradient(141deg, #51dc9f 0%, #21c9da 51%, #2ce8e8 75%);
+  height: 100%;
+  min-height: 100vh;
 }
-
 .App .pageContainer{
   display: flex;
   margin: 10px 150px;
 }
-
 .App .flex-33{
   flex: 33%;
 }
