@@ -1,0 +1,25 @@
+.Home .pageContainer{
+    display: flex;
+    margin: 10px 150px;
+}
+
+.Home .flex-33{
+    flex: 33%;
+}
+.Home .flex-66{
+    flex: 66%;
+}
+.Home .userInfoContainer{
+    border: 1px solid #e2e2e2;
+    background-color: white;
+    padding: 10px 12px;
+}
+.Home .userInfoContainer > h2{
+    text-align: center;
+}
+.Home .userDetailContainer{
+    display: flex;
+}
+.Home .flex-50{
+    width: 50%;
+}

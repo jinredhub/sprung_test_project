@@ -1,0 +1,18 @@
+
+.Tweet{
+    display: flex;
+    border: 1px solid #e2e2e2;
+    background-color: white;
+    padding: 10px 12px;
+}
+.Tweet .initials{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: red;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+
+}
