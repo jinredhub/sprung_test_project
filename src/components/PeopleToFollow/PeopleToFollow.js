@@ -6,7 +6,7 @@ const peopleToFollow = (props) =>{
     const initial = props.email.charAt(0).toUpperCase();
     return (
         <div className='PeopleToFollow'>
-            <div className='initials'>{initial}</div>
+            <div className='initials'><strong>{initial}</strong></div>
             <div>
                 <div><strong>{props.firstName} {props.lastName}</strong></div>
                 <Button
